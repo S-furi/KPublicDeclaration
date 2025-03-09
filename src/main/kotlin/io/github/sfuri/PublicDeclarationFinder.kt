@@ -43,7 +43,7 @@ class PublicDeclarationFinder {
     ) {
         when (declaration) {
             is KtProperty -> {
-                val name = declaration.nameIdentifier?.text ?: "MADONNA MERDA"
+                val name = declaration.nameIdentifier?.text ?: "unnamed"
                 val type = declaration.typeReference?.text?.let { ": $it" } ?: ""
                 val mutability = if (declaration.isVar) "var" else "val"
 
@@ -51,7 +51,7 @@ class PublicDeclarationFinder {
             }
 
             is KtNamedFunction -> {
-                val name = declaration.nameIdentifier?.text ?: "MADONNA MERDA"
+                val name = declaration.nameIdentifier?.text ?: "unnamed"
                 val typeParamsText = declaration.typeParameterList?.text ?: ""
 
                 val paramsText =
@@ -92,7 +92,7 @@ class PublicDeclarationFinder {
                     } else {
                         ""
                     }
-                val name = declaration.nameIdentifier?.text ?: "MADONNA MERDA"
+                val name = declaration.nameIdentifier?.text ?: "unnamed"
 
                 println("$indent$keyword $name$superTypesText {")
 

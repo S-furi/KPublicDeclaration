@@ -1,5 +1,10 @@
 plugins {
     kotlin("jvm") version "2.1.10"
+    application
+}
+
+application {
+    mainClass.set("io.github.sfuri.PublicDeclarationFinderKt")
 }
 
 group = "io.github.sfuri"
@@ -11,6 +16,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation(libs.kotlin.compiler.embeddable)
 }
 
 tasks.test {

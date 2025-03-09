@@ -1,0 +1,5 @@
+[versions]
+kotlin = "2.1.10"
+
+[libraries]
+kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }

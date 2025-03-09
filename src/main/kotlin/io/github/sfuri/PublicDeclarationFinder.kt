@@ -1,5 +1,6 @@
 package io.github.sfuri
 
+import io.github.sfuri.PsiUtils.toPsiFile
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDeclaration
@@ -11,9 +12,7 @@ import org.jetbrains.kotlin.psi.psiUtil.isPublic
 import java.io.File
 
 class PublicDeclarationFinder {
-    val indentTab = "    "
-
-    private val psiFactory = PsiUtils.defaultPsiFactory
+    private val indentTab = "    "
 
     fun getFileFromResources(filename: String): File =
         File(
@@ -22,21 +21,27 @@ class PublicDeclarationFinder {
                 .toURI(),
         )
 
-    private fun String.toPsiFile() = psiFactory.createFile(this)
+    fun printPublicDeclarations(
+        declarations: Sequence<KtDeclaration>,
+        indent: String = "",
+    ) = this.stringifyPublicDeclarations(declarations, indent).forEach(::println)
 
-    fun printDeclarationAST(
+    fun stringifyPublicDeclarations(
+        declarations: Sequence<KtDeclaration>,
+        indent: String = "",
+    ): Sequence<String> = declarations.mapNotNull { this.stringifyPublicDeclaration(it, indent) }
+
+    private fun stringifyPublicDeclaration(
         declaration: KtDeclaration,
         indent: String,
-    ) = this.stringifyPublicDeclaration(declaration, indent).also(::println)
-
-    fun stringifyPublicDeclaration(
-        declaration: KtDeclaration,
-        indent: String,
-    ) = when (declaration) {
-        is KtProperty -> stringifyProperty(declaration, indent)
-        is KtNamedFunction -> stringifyFunction(declaration, indent)
-        is KtClassOrObject -> stringifyClassOrObject(declaration, indent)
-        else -> ""
+    ): String? {
+        if (!declaration.isPublic) return null
+        return when (declaration) {
+            is KtProperty -> stringifyProperty(declaration, indent)
+            is KtNamedFunction -> stringifyFunction(declaration, indent)
+            is KtClassOrObject -> stringifyClassOrObject(declaration, indent)
+            else -> null
+        }
     }
 
     private fun stringifyProperty(
@@ -92,15 +97,12 @@ class PublicDeclarationFinder {
         val superTypesText =
             declaration.superTypeListEntries
                 .map { it.typeReference?.text }
-                .apply {
-                    if (this.isNotEmpty()) {
-                        ": ${this.joinToString(", ")}"
-                    } else {
-                        ""
-                    }
-                }
+                .takeIf { it.isNotEmpty() }
+                ?.apply {
+                    ": ${this.joinToString(", ")}"
+                } ?: ""
 
-        val name = declaration.nameIdentifier?.text ?: "unnamed"
+        val name = if (!(declaration is KtObjectDeclaration && declaration.isCompanion())) declaration.nameIdentifier?.text ?: "unnamed" else ""
 
         val fullDefinition = "$indent$keyword $name$superTypesText {"
 
@@ -115,14 +117,14 @@ class PublicDeclarationFinder {
             val enumDeclarations =
                 declaration.declarations
                     .filter { it !is KtEnumEntry && it.isPublic }
-                    .joinToString("\n") { stringifyPublicDeclaration(it, newIndent) }
+                    .joinToString("\n") { stringifyPublicDeclaration(it, newIndent) ?: "" }
 
             return "$fullDefinition\n$enumVals\n$enumDeclarations\n$indent}"
         }
 
         val declarations =
             declaration.declarations.filter { it.isPublic }.joinToString("\n") {
-                stringifyPublicDeclaration(it, newIndent)
+                stringifyPublicDeclaration(it, newIndent) ?: ""
             }
         return "$fullDefinition\n$declarations\n$indent}"
     }
@@ -136,7 +138,6 @@ class PublicDeclarationFinder {
 
 fun main() {
     val pdf = PublicDeclarationFinder()
-    pdf
-        .lazyLoadDirDeclarations(pdf.getFileFromResources("Exposed"))
-        .forEach { pdf.printDeclarationAST(it, "") }
+    val declarations = pdf.lazyLoadDirDeclarations(pdf.getFileFromResources("Test.kt"))
+    pdf.printPublicDeclarations(declarations, "")
 }

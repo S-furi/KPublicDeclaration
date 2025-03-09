@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation(libs.bundles.kotest)
     implementation(libs.kotlin.compiler.embeddable)
 }
 

@@ -17,4 +17,7 @@ object PsiUtils {
         KotlinCoreEnvironment.createForProduction(Disposer.newDisposable(), compilerConfig, EnvironmentConfigFiles.JVM_CONFIG_FILES)
 
     val defaultPsiFactory = KtPsiFactory(environment.project)
+
+
+    fun String.toPsiFile(psiFactory: KtPsiFactory = defaultPsiFactory) = psiFactory.createFile(this)
 }

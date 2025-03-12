@@ -24,7 +24,7 @@ class PublicDeclarationFinder {
     fun printPublicDeclarations(
         declarations: Sequence<KtDeclaration>,
         indent: String = "",
-    ) = this.stringifyPublicDeclarations(declarations, indent).forEach(::println)
+    ): Unit = this.stringifyPublicDeclarations(declarations, indent).forEach(::println)
 
     fun stringifyPublicDeclarations(
         declarations: Sequence<KtDeclaration>,
@@ -129,15 +129,15 @@ class PublicDeclarationFinder {
         return "$fullDefinition\n$declarations\n$indent}"
     }
 
-    fun lazyLoadDirDeclarations(directory: File): Sequence<KtDeclaration> =
-        directory
-            .walk()
-            .filter { it.isFile && it.extension == "kt" }
-            .flatMap { it.readText().toPsiFile().declarations }
-}
+    private fun lazyLoadDeclarationsFromDirectory(directory: File): Sequence<KtDeclaration> =
+        directory.walk().filter { it.isFile && it.extension == "kt" }.flatMap { it.readText().toPsiFile().declarations }
 
-fun main() {
-    val pdf = PublicDeclarationFinder()
-    val declarations = pdf.lazyLoadDirDeclarations(pdf.getFileFromResources("Test.kt"))
-    pdf.printPublicDeclarations(declarations, "")
+    private fun lazyLoadDeclarationsFromFile(file: File): Sequence<KtDeclaration> =
+        file.takeIf { it.isFile && it.extension == "kt" }
+            ?.let { it.readText().toPsiFile().declarations.asSequence() }
+            ?: emptySequence()
+
+    fun loadDeclarations(resource: File): Sequence<KtDeclaration> =
+        if (resource.isDirectory) lazyLoadDeclarationsFromDirectory(resource)
+        else lazyLoadDeclarationsFromFile(resource)
 }

@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass.set("io.github.sfuri.PublicDeclarationFinderKt")
+    mainClass.set("io.github.sfuri.RunnerKt")
 }
 
 group = "io.github.sfuri"
@@ -18,6 +18,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotest)
     implementation(libs.kotlin.compiler.embeddable)
+    implementation(libs.bundles.logger)
 }
 
 tasks.test {

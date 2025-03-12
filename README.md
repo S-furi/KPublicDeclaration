@@ -32,3 +32,5 @@ class ExposedConnectionImpl: DatabaseConnectionAutoRegistration {
 
 - Does annotations and KDoc need to be printed?
 - When it comes to one liners functions/methods/fields/properties, does their implementation need to be printed?
+- Should modifiers like internal, protected, sealed, etc. have to be displayed?
+- What about data classes? should they're constuctor be displayed or can they be treated as standard classes (i.e. as it is now)?

@@ -18,7 +18,13 @@ git clone https://github.com/S-furi/KPublicDeclaration.git && cd KPublicDeclarat
 And simply run with:
 
 ```bash
-./solution.sh [KtFile|Directory]
+./solution.sh <path_to_kotlin_file | path_to_kotlin_project>
+```
+
+or with gradle:
+
+```bash
+./gradlew run --args <path_to_kotlin_file | path_to_kotlin_project>
 ```
 
 ## Features

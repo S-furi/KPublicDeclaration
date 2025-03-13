@@ -62,6 +62,9 @@ class PublicDeclarationFinder {
         val name = declaration.nameIdentifier?.text ?: "unnamed"
         val typeParamsText = declaration.typeParameterList?.text ?: ""
 
+        val receiverType = declaration.receiverTypeReference?.text ?: ""
+        val receiverTypeText = receiverType.takeIf { it.isNotBlank() && it != "null" }?.let { "$it."} ?: ""
+
         val paramsText =
             if (declaration.valueParameterList != null) {
                 val params =
@@ -74,7 +77,7 @@ class PublicDeclarationFinder {
             }
 
         val retType = declaration.typeReference?.text?.let { ": $it" } ?: ""
-        return "$indent${("fun $typeParamsText$name$paramsText$retType").trim()}"
+        return "$indent${("fun $receiverTypeText$typeParamsText$name$paramsText$retType").trim()}"
     }
 
     private fun stringifyClassOrObject(

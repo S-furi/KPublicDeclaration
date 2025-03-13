@@ -1,14 +1,35 @@
 # KDeclaration
 A simple kotlin program to print all public declarations inside a Kotlin file or project, expoiting [kotlin-compiler-embeddable](https://central.sonatype.com/artifact/org.jetbrains.kotlin/kotlin-compiler-embeddable).
 
+## Requirements
+
+- JDK >= 21
+- Gradle >= 8
+- Kotlinc >= 2.1.10
+
+## Usage
+
+Clone this repository:
+
+```bash
+git clone https://github.com/S-furi/KPublicDeclaration.git && cd KPublicDeclaration
+```
+
+And simply run with:
+
+```bash
+./solution.sh [KtFile|Directory]
+```
+
 ## Features
 
 - Using `Sequence`s for lazy file loading and processing;
-- Expliting AST strcure for fine grained control over what is printed out;
+- Exploiting AST structure for fine grained control over what is printed out;
 
-## What to Expect
+### What to Expect
 
 The output will show
+
 - basic keyword (`interface`, `class`, `fun`, `var`/`val`, `enum`) without any modifier (so `sealed`, `internal`, etc. won't be shown);
 - type parameters if present;
 - name;
@@ -28,9 +49,14 @@ class ExposedConnectionImpl: DatabaseConnectionAutoRegistration {
     fun invoke(connection: Connection)
 }
 ```
+
+---
+
 ## Doubts
 
 - Does annotations and KDoc need to be printed?
 - When it comes to one liners functions/methods/fields/properties, does their implementation need to be printed?
-- Should modifiers like internal, protected, sealed, etc. have to be displayed?
+- Should modifiers like internal, sealed, etc. have to be displayed?
+- Does default parameters values need to be printed?
+- When it comes to extension functions, does the receiver type (the extended object) need to be shown?
 - What about data classes? should they're constuctor be displayed or can they be treated as standard classes (i.e. as it is now)?

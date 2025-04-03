@@ -102,11 +102,9 @@ class PublicDeclarationFinder {
                 .map { it.typeReference?.text }
 
 
-        val superTypesText: String = if (superTypesDeclarations.isEmpty()) {
-            ""
-        } else {
+        val superTypesText: String = superTypesDeclarations.takeIf(List<String?>::isNotEmpty)?.let {
             ": ${superTypesDeclarations.joinToString(", ")}"
-        }
+        } ?: ""
 
         val name = if (!(declaration is KtObjectDeclaration && declaration.isCompanion())) declaration.nameIdentifier?.text ?: "unnamed" else ""
 

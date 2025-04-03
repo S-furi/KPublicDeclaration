@@ -77,7 +77,7 @@ class PublicDeclarationFinder {
             }
 
         val retType = declaration.typeReference?.text?.let { ": $it" } ?: ""
-        return "$indent${("fun $receiverTypeText$typeParamsText$name$paramsText$retType").trim()}"
+        return "$indent${("fun $typeParamsText$receiverTypeText$name$paramsText$retType").trim()}"
     }
 
     private fun stringifyClassOrObject(
